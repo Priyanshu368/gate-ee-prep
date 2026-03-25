@@ -218,65 +218,117 @@ function saveToStorage() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // NETLIFY IDENTITY
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let isSignUpMode = true;
+
 function initAuth() {
-  if (typeof netlifyIdentity === 'undefined') {
-    // Fallback: if Identity widget not loaded (local dev), skip login
-    showApp({ user_metadata: { full_name: 'Priyanshu' }, email: 'demo@gate.ee' });
-    return;
-  }
-
-  netlifyIdentity.on('init', user => {
-    if (user) showApp(user);
-    else showLogin();
-  });
-
-  netlifyIdentity.on('login', user => {
-    netlifyIdentity.close();
-    showApp(user);
-  });
-
-  netlifyIdentity.on('logout', () => showLogin());
-
-  netlifyIdentity.init();
+  const saved = localStorage.getItem('gate_user');
+  if (saved) { isSignUpMode = false; switchToSignIn(); }
+  showLogin();
 }
 
 function showLogin() {
   document.getElementById('login-overlay').style.display = 'flex';
   document.getElementById('app').classList.add('hidden');
+  setTimeout(() => {
+    if (isSignUpMode) document.getElementById('login-name').focus();
+    else document.getElementById('p1').focus();
+  }, 100);
 }
 
-function showApp(user) {
-  currentUser = user;
+function switchToSignIn() {
+  isSignUpMode = false;
+  const saved = JSON.parse(localStorage.getItem('gate_user') || '{}');
+  document.getElementById('name-group').style.display = 'none';
+  document.getElementById('pin-label').textContent = 'Enter your PIN';
+  document.getElementById('login-btn-txt').textContent = 'Sign In';
+  document.getElementById('login-desc-txt').textContent = 'Welcome back, ' + (saved.name || 'Priyanshu') + '! Enter your PIN to continue.';
+  document.querySelector('.login-note').innerHTML = 'New device? <a class="login-switch" onclick="switchToSignUp()">Create new account</a>';
+  ['p1','p2','p3','p4'].forEach(id => document.getElementById(id).value = '');
+  setTimeout(() => document.getElementById('p1').focus(), 100);
+}
+
+function switchToSignUp() {
+  isSignUpMode = true;
+  document.getElementById('name-group').style.display = 'block';
+  document.getElementById('pin-label').textContent = 'Set a 4-digit PIN';
+  document.getElementById('login-btn-txt').textContent = 'Enter My Hub';
+  document.getElementById('login-desc-txt').textContent = 'Create your account with a name and 4-digit PIN.';
+  document.querySelector('.login-note').innerHTML = 'Already have a PIN? <a class="login-switch" onclick="switchLoginMode()">Sign In instead</a>';
+  ['p1','p2','p3','p4'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('login-name').value = '';
+  document.getElementById('login-name').focus();
+}
+
+function switchLoginMode() {
+  if (isSignUpMode) switchToSignIn(); else switchToSignUp();
+}
+
+function getPin() {
+  return ['p1','p2','p3','p4'].map(id => document.getElementById(id).value).join('');
+}
+
+function setError(msg) {
+  document.getElementById('login-error').textContent = msg;
+}
+
+function doLogin() {
+  setError('');
+  const pin = getPin();
+  if (!/^\d{4}$/.test(pin)) { setError('Please enter all 4 digits.'); document.getElementById('p1').focus(); return; }
+  if (isSignUpMode) {
+    const nameEl = document.getElementById('login-name');
+    const name = nameEl.value.trim() || 'Student';
+    localStorage.setItem('gate_user', JSON.stringify({ name, pinHash: simpleHash(pin) }));
+    showApp(name);
+  } else {
+    const saved = JSON.parse(localStorage.getItem('gate_user') || '{}');
+    if (simpleHash(pin) !== saved.pinHash) {
+      setError('Wrong PIN. Try again.');
+      ['p1','p2','p3','p4'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('p1').focus();
+      return;
+    }
+    showApp(saved.name || 'Priyanshu');
+  }
+}
+
+function simpleHash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h |= 0; }
+  return h.toString(36);
+}
+
+function pinNext(el, nextId) {
+  el.value = el.value.replace(/[^0-9]/g, '');
+  if (el.value.length === 1 && nextId) document.getElementById(nextId).focus();
+  if (!nextId && el.value.length === 1) setTimeout(doLogin, 120);
+}
+
+function pinBack(event, prevId) {
+  if (event.key === 'Backspace' && event.target.value === '') {
+    const prev = document.getElementById(prevId);
+    if (prev) { prev.value = ''; prev.focus(); }
+  }
+}
+
+function showApp(name) {
   document.getElementById('login-overlay').style.display = 'none';
   document.getElementById('app').classList.remove('hidden');
-
-  const name = (user.user_metadata && user.user_metadata.full_name)
-    ? user.user_metadata.full_name.split(' ')[0]
-    : (user.email ? user.email.split('@')[0] : 'Student');
-
-  const initial = name[0].toUpperCase();
-
-  ['user-avatar', 'mob-avatar', 'mob-avatar2'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = initial;
-  });
-  ['user-name', 'mob-name'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = name;
-  });
-
-  loadFromStorage();
-  renderAll();
-  startCountdown();
+  const initial = (name || 'P')[0].toUpperCase();
+  ['user-avatar','mob-avatar','mob-avatar2'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=initial; });
+  ['user-name','mob-name'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=name; });
+  loadFromStorage(); renderAll(); startCountdown();
 }
 
 function logOut() {
-  if (typeof netlifyIdentity !== 'undefined') {
-    netlifyIdentity.logout();
-  } else {
-    showLogin();
-  }
+  isSignUpMode = false; switchToSignIn();
+  document.getElementById('login-overlay').style.display = 'flex';
+  document.getElementById('app').classList.add('hidden');
+  ['p1','p2','p3','p4'].forEach(id => document.getElementById(id).value = '');
+  setError('');
 }
+
+  
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // NAVIGATION
