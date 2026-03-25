@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="theme-color" content="#050d1a"/>
+<meta name="description" content="GATE EE 2027 Preparation Hub for Priyanshu"/>
+<title>GATE EE 2027 — Prep Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<!-- Netlify Identity Widget -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN OVERLAY ═══════════ -->
+<div id="login-overlay" class="login-overlay">
+  <div class="login-card">
+    <div class="login-glow"></div>
+    <div class="login-logo">⚡</div>
+    <h1 class="login-title">GATE EE 2027</h1>
+    <p class="login-sub">Priyanshu's Personal Prep Hub</p>
+    <p class="login-desc">Sign in to access your dashboard, track daily progress, and sync your data.</p>
+    <button class="login-btn" onclick="netlifyIdentity.open()">
+      <span>🔐</span> Sign In / Sign Up
+    </button>
+    <p class="login-note">Free account • Data syncs across devices</p>
+  </div>
+</div>
+
+<!-- ═══════════ APP SHELL ═══════════ -->
+<div id="app" class="app hidden">
+
+  <!-- SIDEBAR NAV (desktop) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">GATE EE</span>
+    </div>
+    <div class="user-chip" id="user-chip">
+      <div class="user-avatar" id="user-avatar">P</div>
+      <div class="user-info">
+        <div class="user-name" id="user-name">Priyanshu</div>
+        <div class="user-role">GATE EE 2027</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item active" data-page="home" onclick="goTo('home',this)"><span class="nav-icon">🏠</span><span>Home</span></a>
+      <a class="nav-item" data-page="dashboard" onclick="goTo('dashboard',this)"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+      <a class="nav-item" data-page="plan" onclick="goTo('plan',this)"><span class="nav-icon">📅</span><span>Study Plan</span></a>
+      <a class="nav-item" data-page="tracker" onclick="goTo('tracker',this)"><span class="nav-icon">✍️</span><span>Daily Tracker</span></a>
+      <a class="nav-item" data-page="mocks" onclick="goTo('mocks',this)"><span class="nav-icon">🧪</span><span>Mock Tests</span></a>
+      <a class="nav-item" data-page="formulas" onclick="goTo('formulas',this)"><span class="nav-icon">📐</span><span>Formulas</span></a>
+      <a class="nav-item" data-page="resources" onclick="goTo('resources',this)"><span class="nav-icon">📚</span><span>Resources</span></a>
+      <a class="nav-item" data-page="tips" onclick="goTo('tips',this)"><span class="nav-icon">💡</span><span>Tips</span></a>
+    </nav>
+    <button class="logout-btn" onclick="logOut()">← Sign Out</button>
+  </aside>
+
+  <!-- MOBILE TOPBAR -->
+  <header class="mobile-header">
+    <button class="hamburger" onclick="toggleMobileNav()" id="hamburger">☰</button>
+    <span class="mobile-logo">⚡ GATE EE 2027</span>
+    <div class="user-avatar small" id="mob-avatar">P</div>
+  </header>
+
+  <!-- MOBILE NAV DRAWER -->
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="user-avatar" id="mob-avatar2">P</div>
+      <div>
+        <div class="user-name" id="mob-name">Priyanshu</div>
+        <div class="user-role">GATE EE 2027</div>
+      </div>
+      <button class="drawer-close" onclick="toggleMobileNav()">✕</button>
+    </div>
+    <nav class="drawer-nav">
+      <a onclick="goTo('home',this);toggleMobileNav()">🏠 Home</a>
+      <a onclick="goTo('dashboard',this);toggleMobileNav()">📊 Dashboard</a>
+      <a onclick="goTo('plan',this);toggleMobileNav()">📅 Study Plan</a>
+      <a onclick="goTo('tracker',this);toggleMobileNav()">✍️ Daily Tracker</a>
+      <a onclick="goTo('mocks',this);toggleMobileNav()">🧪 Mock Tests</a>
+      <a onclick="goTo('formulas',this);toggleMobileNav()">📐 Formulas</a>
+      <a onclick="goTo('resources',this);toggleMobileNav()">📚 Resources</a>
+      <a onclick="goTo('tips',this);toggleMobileNav()">💡 Tips</a>
+    </nav>
+    <button class="logout-btn" onclick="logOut()">← Sign Out</button>
+  </div>
+  <div class="drawer-overlay" id="drawer-overlay" onclick="toggleMobileNav()"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- ══ HOME PAGE ══ -->
+    <div id="page-home" class="page active">
+      <div class="hero-wrap">
+        <div class="hero-badge">🎯 GATE 2027 · Electrical Engineering</div>
+        <h1 class="hero-title">Your Personal<br/><span class="grad-text">GATE EE</span><br/>Command Center</h1>
+        <p class="hero-sub">8-month structured plan · Daily tracking · Formula bank · Mock tests · All in one place.</p>
+
+        <div class="countdown-box">
+          <div class="cd-label">⏳ Time remaining until GATE 2027</div>
+          <div class="cd-units">
+            <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-lbl">Days</span></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-lbl">Hours</span></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-lbl">Mins</span></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-lbl">Secs</span></div>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hstat"><div class="hstat-n">240</div><div class="hstat-l">Study Days</div></div>
+          <div class="hstat"><div class="hstat-n">1440</div><div class="hstat-l">Total Hours</div></div>
+          <div class="hstat"><div class="hstat-n">12</div><div class="hstat-l">Subjects</div></div>
+          <div class="hstat"><div class="hstat-n">6</div><div class="hstat-l">Hrs / Day</div></div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="qa-btn primary" onclick="goTo('tracker',null)">✍️ Today's Tracker</button>
+          <button class="qa-btn" onclick="goTo('dashboard',null)">📊 Dashboard</button>
+          <button class="qa-btn" onclick="goTo('formulas',null)">📐 Formulas</button>
+          <button class="qa-btn" onclick="goTo('plan',null)">📅 Study Plan</button>
+        </div>
+
+        <!-- Daily Schedule Card -->
+        <div class="schedule-card">
+          <div class="sc-title">📋 Daily 6-Hour Schedule</div>
+          <div class="sc-rows">
+            <div class="sc-row"><span class="sc-time">6:00–8:00 AM</span><span class="sc-task">New Concept Study (Theory + Notes)</span><span class="sc-dur">2 hrs</span></div>
+            <div class="sc-row"><span class="sc-time">8:00–9:00 AM</span><span class="sc-task">Solved Examples & Derivations</span><span class="sc-dur">1 hr</span></div>
+            <div class="sc-row sc-break"><span class="sc-time">9:00–9:30 AM</span><span class="sc-task">☕ Break</span><span class="sc-dur">—</span></div>
+            <div class="sc-row"><span class="sc-time">9:30–11:00 AM</span><span class="sc-task">Problem Solving / PYQs (Timed)</span><span class="sc-dur">1.5 hrs</span></div>
+            <div class="sc-row"><span class="sc-time">11:00–12:00 PM</span><span class="sc-task">Revision of Previous Day + Formulas</span><span class="sc-dur">1 hr</span></div>
+            <div class="sc-row sc-break"><span class="sc-time">Evening</span><span class="sc-task">🎬 Optional: Watch lecture video</span><span class="sc-dur">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DASHBOARD ══ -->
+    <div id="page-dashboard" class="page">
+      <div class="page-header"><h2 class="page-title">📊 Dashboard</h2><p class="page-sub">Your preparation at a glance</p></div>
+      <div class="dash-stats" id="dash-stats"></div>
+      <div class="section-title">Subject Progress</div>
+      <div class="subj-grid" id="subj-grid"></div>
+    </div>
+
+    <!-- ══ STUDY PLAN ══ -->
+    <div id="page-plan" class="page">
+      <div class="page-header"><h2 class="page-title">📅 8-Month Study Plan</h2><p class="page-sub">April 2025 → November 2025</p></div>
+      <div class="phase-tabs" id="phase-tabs"></div>
+      <div id="plan-content"></div>
+    </div>
+
+    <!-- ══ DAILY TRACKER ══ -->
+    <div id="page-tracker" class="page">
+      <div class="page-header">
+        <h2 class="page-title">✍️ Daily Tracker</h2>
+        <div class="tracker-nav">
+          <button class="tnav-btn" onclick="changeDay(-1)">‹</button>
+          <button class="tnav-btn today-btn" onclick="goToday()">Today</button>
+          <button class="tnav-btn" onclick="changeDay(1)">›</button>
+        </div>
+      </div>
+      <div class="tracker-date-card">
+        <div class="tdc-date" id="tdc-date">—</div>
+        <div class="tdc-rel" id="tdc-rel">—</div>
+      </div>
+      <div class="sessions-wrap" id="sessions-wrap"></div>
+      <div class="tracker-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Subject Studied</label>
+            <input class="finput" id="t-subject" placeholder="e.g. Electrical Machines" oninput="autoSave()"/>
+          </div>
+          <div class="form-group">
+            <label>Hours Logged</label>
+            <input class="finput" id="t-hours" type="number" min="0" max="12" step="0.5" placeholder="6.0" oninput="autoSave()"/>
+          </div>
+          <div class="form-group">
+            <label>PYQs Solved</label>
+            <input class="finput" id="t-pyqs" type="number" min="0" placeholder="0" oninput="autoSave()"/>
+          </div>
+          <div class="form-group">
+            <label>Mood / Energy</label>
+            <select class="finput" id="t-mood" onchange="autoSave()">
+              <option value="">— Select —</option>
+              <option>🔥 Excellent</option>
+              <option>😊 Good</option>
+              <option>😐 Average</option>
+              <option>😴 Tired</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label>Notes / Doubts / Tomorrow's Plan</label>
+          <textarea class="finput ftextarea" id="t-notes" placeholder="What did you study? Any doubts? Plan for tomorrow?" oninput="autoSave()"></textarea>
+        </div>
+        <div class="form-footer">
+          <button class="save-btn" onclick="saveDay()">💾 Save Day's Log</button>
+          <span class="save-status" id="save-status"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MOCK TESTS ══ -->
+    <div id="page-mocks" class="page">
+      <div class="page-header"><h2 class="page-title">🧪 Mock Test Tracker</h2><p class="page-sub">Track all PYQs and mock test scores</p></div>
+      <div class="mock-summary" id="mock-summary"></div>
+      <div class="mock-grid" id="mock-grid"></div>
+    </div>
+
+    <!-- ══ FORMULAS ══ -->
+    <div id="page-formulas" class="page">
+      <div class="page-header"><h2 class="page-title">📐 Formula Bank</h2><p class="page-sub">30+ key GATE EE formulas — filter by subject</p></div>
+      <div class="search-bar-wrap">
+        <input class="search-bar" id="formula-search" placeholder="🔍 Search formulas…" oninput="filterFormulas()"/>
+      </div>
+      <div class="filt-wrap" id="filt-wrap"></div>
+      <div class="formula-grid" id="formula-grid"></div>
+    </div>
+
+    <!-- ══ RESOURCES ══ -->
+    <div id="page-resources" class="page">
+      <div class="page-header"><h2 class="page-title">📚 Resources</h2><p class="page-sub">Best books, videos & websites for GATE EE</p></div>
+      <div class="res-grid" id="res-grid"></div>
+    </div>
+
+    <!-- ══ TIPS ══ -->
+    <div id="page-tips" class="page">
+      <div class="page-header"><h2 class="page-title">💡 Golden Tips</h2><p class="page-sub">Proven GATE exam strategies</p></div>
+      <div class="tips-grid" id="tips-grid"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
