@@ -669,3 +669,23 @@ a { text-decoration: none; cursor: pointer; }
   .mock-grid { grid-template-columns: 1fr; }
   .formula-grid { grid-template-columns: 1fr; }
 }
+
+.login-field-group { text-align: left; margin-bottom: 1rem; }
+.login-label { display: block; font-size: 0.78rem; color: var(--text2); font-weight: 600; margin-bottom: 0.45rem; }
+.login-input {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--text); padding: 0.7rem 1rem; border-radius: var(--radius-sm);
+  font-size: 0.95rem; font-family: inherit; transition: border 0.2s;
+}
+.login-input:focus { border-color: var(--blue); outline: none; }
+.pin-row { display: flex; gap: 0.75rem; justify-content: flex-start; }
+.pin-box {
+  width: 52px; height: 56px; text-align: center;
+  background: var(--bg2); border: 2px solid var(--border2);
+  color: var(--text); font-size: 1.4rem; font-weight: 700;
+  border-radius: var(--radius-sm); font-family: 'JetBrains Mono', monospace;
+  transition: border-color 0.2s;
+}
+.pin-box:focus { border-color: var(--gold); outline: none; }
+.login-error { color: var(--red); font-size: 0.82rem; min-height: 1.2rem; margin-bottom: 0.5rem; text-align: left; }
+.login-switch { color: var(--blue2); cursor: pointer; text-decoration: underline; }
