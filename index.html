@@ -15,17 +15,32 @@
 <body>
 
 <!-- ═══════════ LOGIN OVERLAY ═══════════ -->
+  <!-- ═══════════ LOGIN OVERLAY ═══════════ -->
 <div id="login-overlay" class="login-overlay">
   <div class="login-card">
     <div class="login-glow"></div>
     <div class="login-logo">⚡</div>
     <h1 class="login-title">GATE EE 2027</h1>
     <p class="login-sub">Priyanshu's Personal Prep Hub</p>
-    <p class="login-desc">Sign in to access your dashboard, track daily progress, and sync your data.</p>
-    <button class="login-btn" onclick="netlifyIdentity.open()">
-      <span>🔐</span> Sign In / Sign Up
+    <p class="login-desc" id="login-desc-txt">Create your account with a name and 4-digit PIN. Works offline too!</p>
+    <div class="login-field-group" id="name-group">
+      <label class="login-label">Your Name</label>
+      <input class="login-input" id="login-name" type="text" placeholder="e.g. Priyanshu" maxlength="30" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div class="login-field-group">
+      <label class="login-label" id="pin-label">Set a 4-digit PIN</label>
+      <div class="pin-row">
+        <input class="pin-box" id="p1" type="password" inputmode="numeric" maxlength="1" oninput="pinNext(this,'p2')"/>
+        <input class="pin-box" id="p2" type="password" inputmode="numeric" maxlength="1" oninput="pinNext(this,'p3')" onkeydown="pinBack(event,'p1')"/>
+        <input class="pin-box" id="p3" type="password" inputmode="numeric" maxlength="1" oninput="pinNext(this,'p4')" onkeydown="pinBack(event,'p2')"/>
+        <input class="pin-box" id="p4" type="password" inputmode="numeric" maxlength="1" oninput="pinNext(this,null)" onkeydown="pinBack(event,'p3')"/>
+      </div>
+    </div>
+    <div class="login-error" id="login-error"></div>
+    <button class="login-btn" onclick="doLogin()">
+      <span>🚀</span> <span id="login-btn-txt">Enter My Hub</span>
     </button>
-    <p class="login-note">Free account • Data syncs across devices</p>
+    <p class="login-note">Already have a PIN? <a class="login-switch" onclick="switchLoginMode()">Sign In instead</a></p>
   </div>
 </div>
 
